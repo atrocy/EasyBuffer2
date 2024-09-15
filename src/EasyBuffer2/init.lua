@@ -1,6 +1,95 @@
 --[[ https://luau.org/library#buffer-library read on buffers!!!
 
 	By atrocy(aka cheez1i/Romazka57)!!!
+
+	EasyBuffer2 - create, write in, read buffers easily!
+
+	[ Example Usage ] 
+	
+	 	local EzBuffer = require(path.to.module)
+
+		local buff = EzBuffer.new()
+		buff:Add('Test Index', 'hello!!')
+
+		local result = buff:Read()
+
+		print(result, result['Test Index']) --> Output: {...}, hello!!
+
+	[ Documentation ]
+		[ Constructor ]
+		 	local buff = EzBuffer.new() -> BufferObject
+				Returns:
+					BufferObject
+
+			local buff = EzBuffer.fromId(id: number) -> BufferObject|nil
+				Returns:
+					BufferObject or nil
+
+		[ Destructor ]
+			buff:Destroy() -> ()
+
+		[ Methods ]
+			buff:GetBuffer() -> buffer
+				Description:
+					Returns BufferObject's buffer
+				Returns:
+					buffer
+				Note:
+					Equivalent to buff.buffer
+
+			buff:GetId() -> number
+				Description:
+					Returns BufferObject's id
+				Returns:
+					number
+				Note:
+					Equivalent to buff._id
+
+
+			buff:Add(index: any, value: any) -> ()
+				Description:
+					Adds a new index with a value you provided to the buffer
+
+			buff:Update(index: any, newValue: any) -> ()
+				Description:
+					Updates the index if found with the provided value
+
+			buff:Remove(index: any) -> ()
+				Description:
+					Removes the index from the buffer
+
+
+			buff:Find(index: any) -> point
+				Description:
+					Returns a point type that contains an index and a value and 3 read-only properties.
+				Returns:
+					Point
+
+			buff:Read() -> {...}
+				Description:
+					Returns a table with all the index->values you added
+				Returns:
+					Table
+
+
+			buff:GetData() -> string
+				Description:
+					Returns buffer's data in a string, you most likely won't use this method
+				Returns:
+					string
+
+			buff:GetDataBuffer() -> data_buffer
+				Description:
+					Returns a buffer with a data inside of it
+				Returns:
+					buffer
+				Note:
+					Equivalent to buffer.fromstring(buff:GetData())
+
+			buff:SetToDataBuffer(data_buffer: data_buffer) -> ()
+				Description:
+					Sets itself to the data_buffer you provided, you can change in between these data buffers, something like snapshots
+			
 ]]
 
 
@@ -56,7 +145,8 @@ function ezbuff:GetId(): number
 	return self._id
 end
 
-function ezbuff:Add(index: any, value: any): bufferinfo
+
+function ezbuff:Add(index: any, value: any)
     if index == nil or value == nil then return end
 	if index == DEFAULT_DATA_BUFFER_SEPARATOR_JSON or value == DEFAULT_DATA_BUFFER_SEPARATOR_JSON then
 		error(SeparatorErr:format(index, value, DEFAULT_DATA_BUFFER_SEPARATOR_JSON))
@@ -98,6 +188,7 @@ function ezbuff:Remove(index: any)
 	self:Update(index) --not passing the newValue will remove that index
 end
 
+
 function ezbuff:Read(): {}
 	local points = BufferPoints:get(self:GetId()).points
 
@@ -121,6 +212,7 @@ function ezbuff:Find(index: any): point?
 	return BufferPoints:get(self:GetId()).points[index]
 end
 
+
 function ezbuff:GetData(): string
 	local buff = self.buffer
 	local points = BufferPoints:get(self:GetId())
@@ -132,7 +224,7 @@ function ezbuff:GetDataBuffer(): data_buffer
 	return buffer.fromstring(self:GetData())
 end
 
-function ezbuff:SetToData(data_buffer: data_buffer)
+function ezbuff:SetToDataBuffer(data_buffer: data_buffer)
 	if typeof(data_buffer) ~= 'buffer' then print('oops') return end
 
 	local buff_string = buffer.tostring(data_buffer)
@@ -147,6 +239,7 @@ function ezbuff:SetToData(data_buffer: data_buffer)
 	self.buffer = buffer.fromstring(buff_actual)
 	BufferPoints:setDataPoints(self:GetId(), data_buffer)
 end
+
 
 function ezbuff:Destroy()
 	BufferPoints:remove(self:GetId())
