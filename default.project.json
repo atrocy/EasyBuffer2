@@ -1,0 +1,13 @@
+{
+  "name": "EasyBuffer2",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "EasyBuffer2": {
+        "$path": "src/EasyBuffer2"
+      }
+    }
+
+  }
+}
