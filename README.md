@@ -3,6 +3,8 @@
 
 ### Create buffers, read, update *easily*!
 
+You can get [EasyBuffer2](https://create.roblox.com/store/asset/115321668755697/EasyBuffer2) in Creator Store
+
 Example Usage:
 
 ```lua
