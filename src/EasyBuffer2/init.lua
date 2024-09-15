@@ -94,6 +94,10 @@ function ezbuff:Update(index: any, newValue: any?)
 	if newValue then self:Add(index, newValue) end
 end
 
+function ezbuff:Remove(index: any)
+	self:Update(index) --not passing the newValue will remove that index
+end
+
 function ezbuff:Read(): {}
 	local points = BufferPoints:get(self:GetId()).points
 
