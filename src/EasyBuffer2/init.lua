@@ -157,7 +157,7 @@ function ezbuff:Add(index: any, value: any)
 	local lastPoint: point = points.last
 	if not lastPoint['_endpoint'] then lastPoint = {} lastPoint._endpoint = 0 end
 
-	local func = funcs.getFunction(value)
+	local func, value = funcs.getFunction(value)
 
 	local curSize = buffer.len(self.buffer)
 	local valByte = func.byte or #value
@@ -198,7 +198,9 @@ function ezbuff:Read(): {}
 		local func = funcs.getFunction(point.value)
 
 		if func.name == 'string' then
-			data[point.index] = func.read(self.buffer, point._startpoint, #point.value)
+			local val = funcs.parseBoolean(point.value)
+			if typeof(val) == 'boolean' then data[point.index] = val continue end
+			data[point.index] = func.read(self.buffer, point._startpoint, #val)
 		else
 			data[point.index] = func.read(self.buffer, point._startpoint)
 		end
@@ -208,7 +210,6 @@ function ezbuff:Read(): {}
 end
 
 function ezbuff:Find(index: any): point?
-	if not BufferPoints:get(self:GetId())['points'] then return end
 	return BufferPoints:get(self:GetId()).points[index]
 end
 

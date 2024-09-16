@@ -28,16 +28,8 @@ function private_funcs.isInt(value: number)
 	return math.round(value) == value
 end
 
-function private_funcs.getLastKey(bufferinfo: bufferinfo)
-	local lastkey, lastpoints
-	for key, point: point in bufferinfo.points do
-		if point._endpoint ~= buffer.len(bufferinfo.buffer) then continue end
-
-		lastkey = key
-		lastpoints = point
-	end
-
-	return lastkey, lastpoints
+function private_funcs.parseBoolean(strbool: string)
+	if strbool == 'true' then return true elseif strbool == 'false' then return false else return strbool end
 end
 
 function private_funcs.getFunction(value: any): funcReturn
@@ -49,6 +41,7 @@ function private_funcs.getFunction(value: any): funcReturn
 
 	local tval = typeof(value)
 
+	if tval == 'boolean' then return funcs.string, tostring(value) end
 	if tval == 'string' then return funcs.string, value end
 	if tval == 'number' then
 		for i, contents in ranges do
